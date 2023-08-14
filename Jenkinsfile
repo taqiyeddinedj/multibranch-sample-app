@@ -1,38 +1,43 @@
+#!/usr/bin/env groovy 
+
+@Library('jenkins-shared-library') //in case we dont have any vriable declaration after this line we would have to add _ 'underscore' after the library name
+def gv                             //@Library('jenkins-shared-library')_
+
 pipeline {
     agent any
-
+    tools {
+        maven "maven-3.9.4"
+    }
     stages {
-        stage('test') {
+        stage('init') {
             steps {
                 script {
-                    echo "Testing the application"
-                    echo "Executing pipeline for branch $BRANCH_NAME"
+                    gv = load "script.groovy"
                 }
             }
         }
-        
-        stage('build') {
-            when {
-                expression {
-                    BRANCH_NAME == 'master'
-                }
-            }
+
+        stage('build jar') {
             steps {
                 script {
-                    echo "Building the app"
+                    buildJar()
                 }
             }
         }
-        
+
+        stage('build image') {
+            steps {
+                script {
+                    buildImage()
+                }
+            }
+        }
+
         stage('deploy') {
-            when {
-                expression {
-                    BRANCH_NAME == 'master'
-                }
-            }
             steps {
                 script {
-                    echo "Deploying the app"
+                    gv.deployApp()
+                   
                 }
             }
         }
