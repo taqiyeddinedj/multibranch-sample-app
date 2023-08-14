@@ -5,10 +5,11 @@ pipeline {
         stage('test') {
             steps {
                 script {
-                    echo "Testing the aplication"
+                    echo "Testing the application"
                     echo "Executing pipeline for branch $BRANCH_NAME"
                 }
             }
+        }
         
         stage('build') {
             when {
@@ -22,7 +23,8 @@ pipeline {
                 }
             }
         }
-        stage('dploy') {
+        
+        stage('deploy') {
             when {
                 expression {
                     BRANCH_NAME == 'master'
@@ -34,8 +36,5 @@ pipeline {
                 }
             }
         }
-
-        }
-
     }
 }
