@@ -12,8 +12,17 @@ pipeline {
                 }
             }
         }
+
+        stage('build Maven app') {
+            steps {
+                script {
+                    echo "Building maven application"
+                    sh 'mvn package'
+                }
+            }
+        }
         
-        stage('build') {
+        stage('build Image') {
             steps {
                 script {
                     echo "Building the app"
