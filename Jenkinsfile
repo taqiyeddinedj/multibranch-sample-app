@@ -13,7 +13,8 @@ pipeline {
             steps {
                 script {
                     gv = load "script.groovy"
-		    echo "Starting init phase"
+		            echo "Starting init phase"
+                    echo "if you see me, i am hooked by github push request"
                 }
             }
         }
