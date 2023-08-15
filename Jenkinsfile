@@ -13,6 +13,7 @@ pipeline {
             steps {
                 script {
                     gv = load "script.groovy"
+		    echo "Starting init phase"
                 }
             }
         }
