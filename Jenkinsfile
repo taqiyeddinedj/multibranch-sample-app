@@ -32,7 +32,7 @@ pipeline {
             steps {
                 script {
                     echo "Building maven application"
-                    sh 'mvn package'
+                    sh 'mvn clean package'
                 }
             }
         }
