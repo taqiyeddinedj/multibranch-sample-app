@@ -10,8 +10,11 @@ pipeline {
                 script {
                     echo "Incrementing app version"
                     sh 'mvn build-helper:parse-version versions:set \
-                     -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${pasredVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion}\
-                     versions:commit'
+                        -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${pasredVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion}\
+                        versions:commit'
+                    def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
+                    def version = matcher[0][1] //index 0 will be the '<version>' itself and index 1 will be the version number
+                    env.IMAGE_NAME = "$version-$BUILD_NUMBER"
                 }
             }
         }
@@ -40,9 +43,9 @@ pipeline {
                     echo "Building the app"
                     echo "Building the docker image..."
                     withCredentials([usernamePassword(credentialsId: 'dockr-hub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                    sh "docker build -t taqiyeddinedj/my-repo:jma-4.0 ."
+                    sh "docker build -t taqiyeddinedj/demo-app:$IMAGE_NAME ."
                     sh " echo $PASS | docker login -u $USER --password-stdin"
-                    sh "docker push taqiyeddinedj/my-repo:jma-4.0"
+                    sh "docker push taqiyeddinedj/demo-app:$IMAGE_NAME"
                 }
             }
         }
