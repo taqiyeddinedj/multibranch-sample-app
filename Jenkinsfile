@@ -36,7 +36,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('build Image') {
             steps {
                 script {
@@ -46,9 +46,12 @@ pipeline {
                     sh "docker build -t taqiyeddinedj/d emo-app:${IMAGE_NAME} ."
                     sh " echo $PASS | docker login -u $USER --password-stdin"
                     sh "docker push taqiyeddinedj/demo-app:${IMAGE_NAME}"
-                }
-            }
-        }
+                    }
+		}
+	}
+}
+        
+        
         
         stage('deploy') {   
             steps {
@@ -58,5 +61,4 @@ pipeline {
             }
         }
     }
-}
 }
