@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    tools {
+        maven 'maven-3.9.4'
+    }
     stages {
         stage('test') {
             steps {
@@ -12,27 +14,22 @@ pipeline {
         }
         
         stage('build') {
-            when {
-                expression {
-                    BRANCH_NAME == 'master'
-                }
-            }
             steps {
                 script {
                     echo "Building the app"
+                    echo "Building the docker image..."
+                    withCredentials([usernamePassword(credentialsId: 'dockr-hub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                    sh "docker build -t taqiyeddinedj/my-repo:jma-4.0 ."
+                    sh " echo $PASS | docker login -u $USER --password-stdin"
+                    sh "docker push taqiyeddinedj/my-repo:jma-4.0"
                 }
             }
         }
         
-        stage('deploy') {
-            when {
-                expression {
-                    BRANCH_NAME == 'master'
-                }
-            }
+        stage('deploy') {   
             steps {
                 script {
-                    echo "Deploying the app"
+                    echo "Deploying Docker image to EC2 instance"
                 }
             }
         }
